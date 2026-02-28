@@ -1,0 +1,185 @@
+.home-container {
+  max-width: 1100px;
+  margin: 100px auto;
+}
+
+.home-title {
+  font-size: 50px;
+  margin-bottom: 1rem;
+  color: #333;
+  text-align: center;
+}
+
+.home-projects-title {
+  margin: 60px 0 0 0;
+  font-size: 40px;
+  color: #4f46e5;
+}
+
+/* Formulář pro vytvoření projektu */
+.project-create-wrap {
+  max-width: 400px;
+}
+
+.project-create-wrap h3 {
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+  color: #333;
+}
+
+.project-create-form {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.project-create-form input {
+  flex: 1;
+  padding: 0.5rem 0.8rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.project-create-form input:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 5px rgba(79, 70, 229, 0.5);
+}
+
+.project-create-form button {
+  padding: 0.5rem 1rem;
+  background-color: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
+}
+
+.project-create-form button:hover {
+  background-color: #3730a3;
+  transform: scale(1.05);
+}
+
+/* Seznam projektů a karty */
+.home-project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.project-card {
+  padding: 1rem;
+  border-radius: 12px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 150px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  position: relative;
+}
+
+.project-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+.project-name {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: default;
+  text-align: center;
+}
+
+.project-name-input {
+  font-size: 1.2rem;
+  font-weight: bold;
+  border: none;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  outline: none;
+  text-align: center;
+  width: 100%;
+  border-radius: 6px;
+  padding: 2px 4px;
+}
+
+.project-desc {
+  font-size: 0.9rem;
+  margin: 0.5rem 0;
+  text-align: center;
+}
+
+.project-btns {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.project-edit-btn {
+  padding: 0.3rem 0.6rem;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.3);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
+}
+
+.project-edit-btn:hover {
+  transform: scale(1.2);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.project-delete-btn {
+  padding: 0.3rem 0.6rem;
+  font-size: 1rem;
+  background: transparent;
+  color: #ff4d4f;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.project-delete-btn:hover {
+  transform: scale(1.2);
+}
+
+.home-add-btn {
+  display: block;
+  margin: 1rem auto;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background-color: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.home-add-btn:hover {
+  background-color: #3730a3;
+}
+
+.home-empty {
+  color: #ffffff;
+  font-style: italic;
+  text-align: center;
+}
