@@ -16,9 +16,14 @@
   color: #4f46e5;
 }
 
+.home-empty {
+  font-style: italic;
+}
+
 /* Formulář pro vytvoření projektu */
 .project-create-wrap {
   max-width: 400px;
+  margin: 30px 0 60px 0;
 }
 
 .project-create-wrap h3 {
@@ -56,14 +61,15 @@
   border-radius: 6px;
   font-size: 1rem;
   cursor: pointer;
-  transition:
-    background-color 0.2s ease,
-    transform 0.1s ease;
 }
 
 .project-create-form button:hover {
   background-color: #3730a3;
-  transform: scale(1.05);
+}
+
+.project-create-error {
+  margin-top: 10px;
+  color: red;
 }
 
 /* Seznam projektů a karty */
@@ -82,12 +88,11 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 150px;
+  min-height: 250px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease;
-  position: relative;
 }
 
 .project-card:hover {
@@ -96,15 +101,12 @@
 }
 
 .project-name {
-  margin: 0;
-  font-size: 1.2rem;
-  font-weight: bold;
-  cursor: default;
+  font-size: 1.7rem;
   text-align: center;
 }
 
 .project-name-input {
-  font-size: 1.2rem;
+  font-size: 1.7rem;
   font-weight: bold;
   border: none;
   background: rgba(255, 255, 255, 0.2);
@@ -117,22 +119,18 @@
 }
 
 .project-desc {
-  font-size: 0.9rem;
-  margin: 0.5rem 0;
-  text-align: center;
+  margin: 1rem 0;
 }
 
 .project-btns {
   display: flex;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
+  gap: 1rem;
 }
 
 .project-edit-btn {
-  padding: 0.3rem 0.6rem;
-  font-size: 1rem;
-  background: rgba(255, 255, 255, 0.3);
-  color: white;
+  font-size: 1.5rem;
+  background-color: rgba(0, 0, 0, 0);
+  color: #333;
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -143,43 +141,23 @@
 
 .project-edit-btn:hover {
   transform: scale(1.2);
-  background: rgba(255, 255, 255, 0.5);
 }
 
 .project-delete-btn {
-  padding: 0.3rem 0.6rem;
   font-size: 1rem;
   background: transparent;
-  color: #ff4d4f;
+  color: red;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   transition: transform 0.1s ease;
 }
 
+.project-delete-btn > i {
+  margin: 0;
+  padding: 0;
+}
+
 .project-delete-btn:hover {
   transform: scale(1.2);
-}
-
-.home-add-btn {
-  display: block;
-  margin: 1rem auto;
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  background-color: #4f46e5;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.home-add-btn:hover {
-  background-color: #3730a3;
-}
-
-.home-empty {
-  color: #ffffff;
-  font-style: italic;
-  text-align: center;
 }
