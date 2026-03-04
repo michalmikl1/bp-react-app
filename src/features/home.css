@@ -17,6 +17,10 @@
   color: #4f46e5;
 }
 
+#home-projects-dashboard-title {
+  margin-bottom: 1rem;
+}
+
 .home-empty {
   font-style: italic;
   margin-top: 1rem;

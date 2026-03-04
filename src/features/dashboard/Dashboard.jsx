@@ -1,7 +1,68 @@
-import React from "react";
+import { useState, useEffect } from "react";
+import projectService from "../../app/services/project.service";
+import taskService from "../../app/services/task.service";
+import "./dashboard.css";
 
-const Dashboard = () => {
-  return <h1>Dashboard</h1>;
-};
+export default function Dashboard() {
+  const [projects, setProjects] = useState([]);
+  const [tasks, setTasks] = useState([]);
 
-export default Dashboard;
+  useEffect(() => {
+    setProjects(projectService.getProjects());
+    setTasks(taskService.getTasks());
+  }, []);
+
+  const totalProjects = projects.length;
+  const totalTasks = tasks.length;
+
+  const tasksByStatus = {
+    TODO: tasks.filter((t) => t.status === "TODO").length,
+    IN_PROGRESS: tasks.filter((t) => t.status === "IN_PROGRESS").length,
+    DONE: tasks.filter((t) => t.status === "DONE").length,
+  };
+
+  const tasksByPriority = {
+    LOW: tasks.filter((t) => t.priority === "LOW").length,
+    MEDIUM: tasks.filter((t) => t.priority === "MEDIUM").length,
+    HIGH: tasks.filter((t) => t.priority === "HIGH").length,
+  };
+
+  const tasksDueSoon = tasks.filter((t) => {
+    if (!t.dueDate) return false;
+    const now = new Date();
+    const due = new Date(t.dueDate);
+    const diff = (due - now) / (1000 * 60 * 60 * 24);
+    return diff >= 0 && diff <= 1;
+  }).length;
+
+  return (
+    <div className="db-container">
+      <div className="db-stats-grid">
+        <div className="db-stat-box">
+          <h3>Projekty celkem</h3>
+          <p>{totalProjects}</p>
+        </div>
+        <div className="db-stat-box">
+          <h3>Úkoly celkem</h3>
+          <p>{totalTasks}</p>
+        </div>
+        <div className="db-stat-box">
+          <h3>Úkoly podle stavu</h3>
+          <p>TODO: {tasksByStatus.TODO}</p>
+          <p>In Progress: {tasksByStatus.IN_PROGRESS}</p>
+          <p>Done: {tasksByStatus.DONE}</p>
+        </div>
+        <div className="db-stat-box">
+          <h3>Úkoly podle priority</h3>
+          <p>Low: {tasksByPriority.LOW}</p>
+          <p>Medium: {tasksByPriority.MEDIUM}</p>
+          <p>High: {tasksByPriority.HIGH}</p>
+        </div>
+        <div className="db-stat-box">
+          <h3>Úkoly s termínem do 1 dne</h3>
+          <p>{tasksDueSoon}</p>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -11,12 +11,10 @@ import "./projectDetail.css";
 export default function ProjectDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-
   const projectId = Number(id);
 
   const [project, setProject] = useState(null);
   const [tasks, setTasks] = useState([]);
-
   const [formVisible, setFormVisible] = useState(false);
   const [newTask, setNewTask] = useState({
     title: "",
@@ -25,6 +23,9 @@ export default function ProjectDetail() {
     priority: TaskPriority.MEDIUM,
     dueDate: "",
   });
+
+  const [editingTaskId, setEditingTaskId] = useState(null);
+  const [editingTask, setEditingTask] = useState({});
 
   useEffect(() => {
     const found = projectService.getProjectById(projectId);
@@ -36,7 +37,9 @@ export default function ProjectDetail() {
     return (
       <div className="project-detail-container">
         <h2>Projekt nebyl nalezen</h2>
-        <button onClick={() => navigate("/")}>Zpět na projekty</button>
+        <button className="back-btn" onClick={() => navigate("/")}>
+          Zpět na projekty
+        </button>
       </div>
     );
   }
@@ -48,12 +51,7 @@ export default function ProjectDetail() {
   const handleCreateTask = (e) => {
     e.preventDefault();
     if (!newTask.title.trim()) return;
-
-    taskService.createTask({
-      ...newTask,
-      projectId,
-    });
-
+    taskService.createTask({ ...newTask, projectId });
     refreshTasks();
     setFormVisible(false);
     setNewTask({
@@ -68,6 +66,19 @@ export default function ProjectDetail() {
   const handleDelete = (taskId) => {
     taskService.deleteTask(taskId);
     refreshTasks();
+  };
+
+  const startEditingTask = (task) => {
+    setEditingTaskId(task.id);
+    setEditingTask({ ...task });
+  };
+
+  const saveTaskEdit = () => {
+    if (!editingTask.title.trim()) return;
+    taskService.updateTask(editingTask);
+    refreshTasks();
+    setEditingTaskId(null);
+    setEditingTask({});
   };
 
   const stats = {
@@ -139,59 +150,40 @@ export default function ProjectDetail() {
               }
               required
             />
-
             <textarea
               placeholder="Popis"
-              required
               value={newTask.description}
               onChange={(e) =>
-                setNewTask({
-                  ...newTask,
-                  description: e.target.value,
-                })
+                setNewTask({ ...newTask, description: e.target.value })
               }
             />
-
             <select
               value={newTask.status}
               onChange={(e) =>
-                setNewTask({
-                  ...newTask,
-                  status: e.target.value,
-                })
+                setNewTask({ ...newTask, status: e.target.value })
               }
             >
               {Object.values(TaskStatus).map((s) => (
                 <option key={s}>{s}</option>
               ))}
             </select>
-
             <select
               value={newTask.priority}
               onChange={(e) =>
-                setNewTask({
-                  ...newTask,
-                  priority: e.target.value,
-                })
+                setNewTask({ ...newTask, priority: e.target.value })
               }
             >
               {Object.values(TaskPriority).map((p) => (
                 <option key={p}>{p}</option>
               ))}
             </select>
-
             <input
               type="date"
-              required
               value={newTask.dueDate}
               onChange={(e) =>
-                setNewTask({
-                  ...newTask,
-                  dueDate: e.target.value,
-                })
+                setNewTask({ ...newTask, dueDate: e.target.value })
               }
             />
-
             <button className="task-save-btn" type="submit">
               Uložit
             </button>
@@ -201,22 +193,107 @@ export default function ProjectDetail() {
         <div className="task-grid">
           {tasks.map((task) => (
             <div key={task.id} className="task-card">
-              <h3 className="task-card-title">{task.title}</h3>
-              <p className="task-card-desc">{task.description}</p>
-              <p className="task-card-status">Status: {task.status}</p>
-              <p className="task-card-priority">Priorita: {task.priority}</p>
-              {task.dueDate && (
-                <p className="task-card-enddate">
-                  Termín dokončení:{" "}
-                  {new Date(task.dueDate).toLocaleDateString()}
-                </p>
-              )}
-              <button
-                className="task-delete-button"
-                onClick={() => handleDelete(task.id)}
-              >
-                Smazat
-              </button>
+              <div className="task-inner-card">
+                {editingTaskId === task.id ? (
+                  <>
+                    <input
+                      className="task-card-title-input"
+                      value={editingTask.title}
+                      onChange={(e) =>
+                        setEditingTask({
+                          ...editingTask,
+                          title: e.target.value,
+                        })
+                      }
+                    />
+                    <textarea
+                      className="task-card-desc-input"
+                      id="task-card-desc-input-textarea"
+                      value={editingTask.description}
+                      onChange={(e) =>
+                        setEditingTask({
+                          ...editingTask,
+                          description: e.target.value,
+                        })
+                      }
+                    />
+                    <select
+                      value={editingTask.status}
+                      onChange={(e) =>
+                        setEditingTask({
+                          ...editingTask,
+                          status: e.target.value,
+                        })
+                      }
+                    >
+                      {Object.values(TaskStatus).map((s) => (
+                        <option key={s}>{s}</option>
+                      ))}
+                    </select>
+                    <select
+                      value={editingTask.priority}
+                      onChange={(e) =>
+                        setEditingTask({
+                          ...editingTask,
+                          priority: e.target.value,
+                        })
+                      }
+                    >
+                      {Object.values(TaskPriority).map((p) => (
+                        <option key={p}>{p}</option>
+                      ))}
+                    </select>
+                    <input
+                      type="date"
+                      value={editingTask.dueDate}
+                      onChange={(e) =>
+                        setEditingTask({
+                          ...editingTask,
+                          dueDate: e.target.value,
+                        })
+                      }
+                    />
+                  </>
+                ) : (
+                  <>
+                    <h3 className="task-card-title">{task.title}</h3>
+                    <p className="task-card-desc">{task.description}</p>
+                    <p className="task-card-status">Status: {task.status}</p>
+                    <p className="task-card-priority">
+                      Priorita: {task.priority}
+                    </p>
+                    {task.dueDate && (
+                      <p className="task-card-enddate">
+                        Termín dokončení:{" "}
+                        {new Date(task.dueDate).toLocaleDateString()}
+                      </p>
+                    )}
+                  </>
+                )}
+              </div>
+
+              <div className="task-card-buttons">
+                {editingTaskId === task.id ? (
+                  <button className="task-save-btn" onClick={saveTaskEdit}>
+                    Uložit změny
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      className="task-button task-edit-btn"
+                      onClick={() => startEditingTask(task)}
+                    >
+                      Upravit
+                    </button>
+                    <button
+                      className="task-delete-button"
+                      onClick={() => handleDelete(task.id)}
+                    >
+                      Smazat
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
           ))}
         </div>
