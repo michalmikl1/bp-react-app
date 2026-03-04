@@ -1,16 +1,37 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "../../features/Home";
+import Login from "../../features/users/Login";
+import Register from "../../features/users/Register";
 import ProjectDetail from "../../features/projects/ProjectDetail";
-import TaskDetail from "../../features/tasks/TaskDetail";
+import ProtectedRoute from "./ProtectedRoute";
+import Navbar from "../../features/navbar/Navbar";
 
-export default function AppRouter() {
+function App() {
   return (
-    <BrowserRouter>
+    <Router>
+      <Navbar />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/projects/:id" element={<ProjectDetail />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/projects/:id"
+          element={
+            <ProtectedRoute>
+              <ProjectDetail />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
-    </BrowserRouter>
+    </Router>
   );
 }
+
+export default App;
