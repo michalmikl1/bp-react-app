@@ -8,13 +8,14 @@ export default function Home() {
   const [projects, setProjects] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [editName, setEditName] = useState("");
-
   const [newProjectName, setNewProjectName] = useState("");
   const [newProjectDescription, setNewProjectDescription] = useState("");
   const [error, setError] = useState("");
+  const [filterText, setFilterText] = useState("");
 
   const navigate = useNavigate();
 
+  // načtení projektů
   useEffect(() => {
     setProjects(projectService.getProjects());
   }, []);
@@ -86,7 +87,12 @@ export default function Home() {
   };
 
   const truncateDescription = (desc) =>
-    desc.length > 30 ? desc.slice(0, 27) + "..." : desc;
+    desc.length > 30 ? desc.slice(0, 30) + "..." : desc;
+
+  // filtrování projektů podle názvu
+  const filteredProjects = projects.filter((p) =>
+    p.name.toLowerCase().includes(filterText.toLowerCase()),
+  );
 
   return (
     <div className="home-container">
@@ -96,7 +102,7 @@ export default function Home() {
       <h2 className="home-projects-title" id="home-projects-dashboard-title">
         Dashboard
       </h2>
-      <Dashboard />
+      <Dashboard projects={projects} />
 
       <h2 className="home-projects-title">Vaše projekty</h2>
 
@@ -122,11 +128,23 @@ export default function Home() {
         {error && <p className="project-create-error">{error}</p>}
       </div>
 
-      {projects.length === 0 ? (
-        <p className="home-empty">Žádné projekty zatím nejsou vytvořené.</p>
+      {projects.length > 0 && (
+        <div className="project-filter">
+          <h3>Vyhledejte konkrétní projekt</h3>
+          <input
+            type="text"
+            placeholder="Filtrovat projekty podle názvu ..."
+            value={filterText}
+            onChange={(e) => setFilterText(e.target.value)}
+          />
+        </div>
+      )}
+
+      {filteredProjects.length === 0 ? (
+        <p className="home-empty">Žádné projekty nenalezeny.</p>
       ) : (
         <div className="home-project-grid">
-          {projects.map((project) => (
+          {filteredProjects.map((project) => (
             <div
               key={project.id}
               className="project-card"
@@ -154,7 +172,6 @@ export default function Home() {
                   )}
                 </>
               )}
-
               <p className="project-date">
                 Vytvořeno: {new Date(project.createdAt).toLocaleDateString()}
               </p>

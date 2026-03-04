@@ -27,6 +27,11 @@ export default function ProjectDetail() {
   const [editingTaskId, setEditingTaskId] = useState(null);
   const [editingTask, setEditingTask] = useState({});
 
+  // filtry a řazení
+  const [statusFilter, setStatusFilter] = useState("");
+  const [priorityFilter, setPriorityFilter] = useState("");
+  const [dueSoonOnly, setDueSoonOnly] = useState(false);
+
   useEffect(() => {
     const found = projectService.getProjectById(projectId);
     setProject(found);
@@ -88,6 +93,20 @@ export default function ProjectDetail() {
     done: tasks.filter((t) => t.status === TaskStatus.DONE).length,
     high: tasks.filter((t) => t.priority === TaskPriority.HIGH).length,
   };
+
+  // filtrované a řazené úkoly
+  const filteredTasks = tasks.filter((t) => {
+    if (statusFilter && t.status !== statusFilter) return false;
+    if (priorityFilter && t.priority !== priorityFilter) return false;
+    if (dueSoonOnly) {
+      if (!t.dueDate) return false;
+      const now = new Date();
+      const due = new Date(t.dueDate);
+      const diff = (due - now) / (1000 * 60 * 60 * 24);
+      if (diff < 0 || diff > 1) return false;
+    }
+    return true;
+  });
 
   return (
     <div className="project-detail-container">
@@ -190,112 +209,155 @@ export default function ProjectDetail() {
           </form>
         )}
 
-        <div className="task-grid">
-          {tasks.map((task) => (
-            <div key={task.id} className="task-card">
-              <div className="task-inner-card">
-                {editingTaskId === task.id ? (
-                  <>
-                    <input
-                      className="task-card-title-input"
-                      value={editingTask.title}
-                      onChange={(e) =>
-                        setEditingTask({
-                          ...editingTask,
-                          title: e.target.value,
-                        })
-                      }
-                    />
-                    <textarea
-                      className="task-card-desc-input"
-                      id="task-card-desc-input-textarea"
-                      value={editingTask.description}
-                      onChange={(e) =>
-                        setEditingTask({
-                          ...editingTask,
-                          description: e.target.value,
-                        })
-                      }
-                    />
-                    <select
-                      value={editingTask.status}
-                      onChange={(e) =>
-                        setEditingTask({
-                          ...editingTask,
-                          status: e.target.value,
-                        })
-                      }
-                    >
-                      {Object.values(TaskStatus).map((s) => (
-                        <option key={s}>{s}</option>
-                      ))}
-                    </select>
-                    <select
-                      value={editingTask.priority}
-                      onChange={(e) =>
-                        setEditingTask({
-                          ...editingTask,
-                          priority: e.target.value,
-                        })
-                      }
-                    >
-                      {Object.values(TaskPriority).map((p) => (
-                        <option key={p}>{p}</option>
-                      ))}
-                    </select>
-                    <input
-                      type="date"
-                      value={editingTask.dueDate}
-                      onChange={(e) =>
-                        setEditingTask({
-                          ...editingTask,
-                          dueDate: e.target.value,
-                        })
-                      }
-                    />
-                  </>
-                ) : (
-                  <>
-                    <h3 className="task-card-title">{task.title}</h3>
-                    <p className="task-card-desc">{task.description}</p>
-                    <p className="task-card-status">Status: {task.status}</p>
-                    <p className="task-card-priority">
-                      Priorita: {task.priority}
-                    </p>
-                    {task.dueDate && (
-                      <p className="task-card-enddate">
-                        Termín dokončení:{" "}
-                        {new Date(task.dueDate).toLocaleDateString()}
-                      </p>
-                    )}
-                  </>
-                )}
-              </div>
+        {/* Filtry úkolů */}
+        <div className="task-filters">
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <option value="">Všechny stavy</option>
+            {Object.values(TaskStatus).map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
+          <select
+            value={priorityFilter}
+            onChange={(e) => setPriorityFilter(e.target.value)}
+          >
+            <option value="">Všechny priority</option>
+            {Object.values(TaskPriority).map((p) => (
+              <option key={p} value={p}>
+                {p}
+              </option>
+            ))}
+          </select>
+          <label className="due-soon-label">
+            <input
+              type="checkbox"
+              checked={dueSoonOnly}
+              onChange={() => setDueSoonOnly(!dueSoonOnly)}
+            />
+            Úkoly do 1 dne
+          </label>
+        </div>
 
-              <div className="task-card-buttons">
-                {editingTaskId === task.id ? (
-                  <button className="task-save-btn" onClick={saveTaskEdit}>
-                    Uložit změny
-                  </button>
-                ) : (
-                  <>
-                    <button
-                      className="task-button task-edit-btn"
-                      onClick={() => startEditingTask(task)}
-                    >
-                      Upravit
+        <div className="task-grid">
+          {filteredTasks.map((task) => {
+            const isDueSoon = task.dueDate
+              ? (new Date(task.dueDate) - new Date()) / (1000 * 60 * 60 * 24) <=
+                1
+              : false;
+
+            return (
+              <div
+                key={task.id}
+                className={`task-card ${isDueSoon ? "task-due-soon" : ""}`}
+              >
+                <div className="task-inner-card">
+                  {editingTaskId === task.id ? (
+                    <>
+                      <input
+                        className="task-card-title-input"
+                        value={editingTask.title}
+                        onChange={(e) =>
+                          setEditingTask({
+                            ...editingTask,
+                            title: e.target.value,
+                          })
+                        }
+                      />
+                      <textarea
+                        className="task-card-desc-input"
+                        value={editingTask.description}
+                        onChange={(e) =>
+                          setEditingTask({
+                            ...editingTask,
+                            description: e.target.value,
+                          })
+                        }
+                      />
+                      <select
+                        value={editingTask.status}
+                        onChange={(e) =>
+                          setEditingTask({
+                            ...editingTask,
+                            status: e.target.value,
+                          })
+                        }
+                      >
+                        {Object.values(TaskStatus).map((s) => (
+                          <option key={s}>{s}</option>
+                        ))}
+                      </select>
+                      <select
+                        value={editingTask.priority}
+                        onChange={(e) =>
+                          setEditingTask({
+                            ...editingTask,
+                            priority: e.target.value,
+                          })
+                        }
+                      >
+                        {Object.values(TaskPriority).map((p) => (
+                          <option key={p}>{p}</option>
+                        ))}
+                      </select>
+                      <input
+                        type="date"
+                        value={editingTask.dueDate}
+                        onChange={(e) =>
+                          setEditingTask({
+                            ...editingTask,
+                            dueDate: e.target.value,
+                          })
+                        }
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <h3 className="task-card-title">{task.title}</h3>
+                      <p className="task-card-desc">{task.description}</p>
+                      <p className="task-card-status">Status: {task.status}</p>
+                      <p className="task-card-priority">
+                        Priorita: {task.priority}
+                      </p>
+                      {task.dueDate && (
+                        <p className="task-card-enddate">
+                          Termín dokončení:{" "}
+                          {new Date(task.dueDate).toLocaleDateString()}
+                        </p>
+                      )}
+                    </>
+                  )}
+                </div>
+
+                <div className="task-card-buttons">
+                  {editingTaskId === task.id ? (
+                    <button className="task-save-btn" onClick={saveTaskEdit}>
+                      Uložit změny
                     </button>
-                    <button
-                      className="task-delete-button"
-                      onClick={() => handleDelete(task.id)}
-                    >
-                      Smazat
-                    </button>
-                  </>
-                )}
+                  ) : (
+                    <>
+                      <button
+                        className="task-button task-edit-btn"
+                        onClick={() => startEditingTask(task)}
+                      >
+                        Upravit
+                      </button>
+                      <button
+                        className="task-delete-button"
+                        onClick={() => handleDelete(task.id)}
+                      >
+                        Smazat
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

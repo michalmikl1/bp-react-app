@@ -10,7 +10,6 @@ export default function AppRouter() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/projects/:id" element={<ProjectDetail />} />
-        <Route path="/projects/:id/tasks/:taskId" element={<TaskDetail />} />
       </Routes>
     </BrowserRouter>
   );

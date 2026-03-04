@@ -90,12 +90,28 @@
   font-size: 0.9rem;
 }
 
+/* Projekt Filter */
+.project-filter > h3 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.project-filter > input {
+  width: 275px;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
 /* Grid projektů */
 .home-project-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 1.2rem;
-  margin-top: 2rem;
+  margin-top: 2.5rem;
 }
 
 /* Projekt karta */

@@ -61,10 +61,6 @@
 }
 
 @media (max-width: 480px) {
-  .db-container {
-    margin: 60px auto;
-  }
-
   .db-title {
     font-size: 28px;
   }

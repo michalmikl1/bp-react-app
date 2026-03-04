@@ -1,16 +1,8 @@
-import { useState, useEffect } from "react";
-import projectService from "../../app/services/project.service";
 import taskService from "../../app/services/task.service";
 import "./dashboard.css";
 
-export default function Dashboard() {
-  const [projects, setProjects] = useState([]);
-  const [tasks, setTasks] = useState([]);
-
-  useEffect(() => {
-    setProjects(projectService.getProjects());
-    setTasks(taskService.getTasks());
-  }, []);
+export default function Dashboard({ projects }) {
+  const tasks = taskService.getTasks();
 
   const totalProjects = projects.length;
   const totalTasks = tasks.length;
