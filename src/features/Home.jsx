@@ -1,13 +1,18 @@
 import { useState, useEffect } from "react";
 import projectService from "../app/services/project.service";
 import "./home.css";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
   const [projects, setProjects] = useState([]);
   const [editingId, setEditingId] = useState(null);
-  const [editValue, setEditValue] = useState("");
+  const [editName, setEditName] = useState("");
+
   const [newProjectName, setNewProjectName] = useState("");
-  const [error, setError] = useState(""); // 🔴 nový state pro chybu
+  const [newProjectDescription, setNewProjectDescription] = useState("");
+  const [error, setError] = useState("");
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     setProjects(projectService.getProjects());
@@ -15,23 +20,19 @@ export default function Home() {
 
   useEffect(() => {
     if (!error) return;
-
-    const timer = setTimeout(() => {
-      setError("");
-    }, 5000);
-
+    const timer = setTimeout(() => setError(""), 5000);
     return () => clearTimeout(timer);
   }, [error]);
 
-  const projectNameExists = (name, ignoreId = null) => {
-    return projects.some(
+  const projectNameExists = (name, ignoreId = null) =>
+    projects.some(
       (p) => p.name.toLowerCase() === name.toLowerCase() && p.id !== ignoreId,
     );
-  };
 
   const handleAddProject = (e) => {
     e.preventDefault();
     const trimmedName = newProjectName.trim();
+    const trimmedDescription = newProjectDescription.trim();
 
     if (!trimmedName) {
       setError("Název projektu nesmí být prázdný.");
@@ -45,13 +46,14 @@ export default function Home() {
 
     projectService.createProject({
       name: trimmedName,
-      description: "",
+      description: trimmedDescription,
       ownerId: 1,
     });
 
     setProjects(projectService.getProjects());
     setNewProjectName("");
-    setError(""); // ✅ vymazání chyby
+    setNewProjectDescription("");
+    setError("");
   };
 
   const handleDelete = (id) => {
@@ -59,24 +61,32 @@ export default function Home() {
     setProjects(projectService.getProjects());
   };
 
-  const startEditing = (id, currentName) => {
-    setEditingId(id);
-    setEditValue(currentName);
+  const startEditing = (project) => {
+    setEditingId(project.id);
+    setEditName(project.name);
   };
 
   const saveEdit = (id) => {
     const project = projectService.getProjectById(id);
-    const trimmedName = editValue.trim();
+    const trimmedName = editName.trim();
 
     if (!trimmedName || projectNameExists(trimmedName, id)) {
       setEditingId(null);
       return;
     }
 
-    projectService.updateProject({ ...project, name: trimmedName });
+    projectService.updateProject({
+      ...project,
+      name: trimmedName,
+    });
+
     setProjects(projectService.getProjects());
     setEditingId(null);
   };
+
+  // Zkrácení popisu na max 60 znaků
+  const truncateDescription = (desc) =>
+    desc.length > 30 ? desc.slice(0, 27) + "..." : desc;
 
   return (
     <div className="home-container">
@@ -87,7 +97,6 @@ export default function Home() {
 
       <div className="project-create-wrap">
         <h3>Vytvořte projekt</h3>
-
         <form onSubmit={handleAddProject} className="project-create-form">
           <input
             type="text"
@@ -98,9 +107,13 @@ export default function Home() {
               if (error) setError("");
             }}
           />
+          <textarea
+            placeholder="Popis projektu (nepovinné)"
+            value={newProjectDescription}
+            onChange={(e) => setNewProjectDescription(e.target.value)}
+          />
           <button type="submit">Vytvořit</button>
         </form>
-
         {error && <p className="project-create-error">{error}</p>}
       </div>
 
@@ -113,36 +126,52 @@ export default function Home() {
               key={project.id}
               className="project-card"
               style={{ background: project.gradient }}
+              onClick={() => {
+                if (!editingId) navigate(`/projects/${project.id}`);
+              }}
             >
               {editingId === project.id ? (
                 <input
                   className="project-name-input"
-                  value={editValue}
-                  onChange={(e) => setEditValue(e.target.value)}
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
                   onBlur={() => saveEdit(project.id)}
                   onKeyDown={(e) => e.key === "Enter" && saveEdit(project.id)}
                   autoFocus
                 />
               ) : (
-                <h3 className="project-name">{project.name}</h3>
+                <>
+                  <h3 className="project-name">{project.name}</h3>
+                  {project.description && (
+                    <p className="project-description">
+                      {truncateDescription(project.description)}
+                    </p>
+                  )}
+                </>
               )}
 
-              <p className="project-desc">
+              <p className="project-date">
                 Vytvořeno: {new Date(project.createdAt).toLocaleDateString()}
               </p>
 
               <div className="project-btns">
                 <button
                   className="project-edit-btn"
-                  onClick={() => startEditing(project.id, project.name)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    startEditing(project);
+                  }}
                 >
-                  <i class="fa-solid fa-pen-to-square"></i>
+                  <i className="fa-solid fa-pen-to-square"></i>
                 </button>
                 <button
                   className="project-delete-btn"
-                  onClick={() => handleDelete(project.id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(project.id);
+                  }}
                 >
-                  <i class="fa-solid fa-trash"></i>
+                  <i className="fa-solid fa-trash"></i>
                 </button>
               </div>
             </div>
