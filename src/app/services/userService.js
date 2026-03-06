@@ -1,4 +1,6 @@
 // app/services/user.service.js
+import bcrypt from "bcryptjs";
+
 const USERS_KEY = "task_manager_users";
 const TOKEN_KEY = "task_manager_token";
 
@@ -17,7 +19,14 @@ const register = ({ username, password }) => {
     throw new Error("Uživatel s tímto jménem již existuje.");
   }
 
-  const newUser = { id: Date.now(), username, password };
+  // HASH PASSWORD
+  const hashedPassword = bcrypt.hashSync(password, 10);
+
+  const newUser = {
+    id: Date.now(),
+    username,
+    password: hashedPassword,
+  };
 
   users.push(newUser);
   saveUsers(users);
@@ -33,14 +42,19 @@ const register = ({ username, password }) => {
 
 const login = ({ username, password }) => {
   const users = getUsers();
-  const user = users.find(
-    (u) => u.username === username && u.password === password,
-  );
-  if (!user) throw new Error("Špatné uživatelské jméno nebo heslo.");
+
+  const user = users.find((u) => u.username === username);
+
+  // kontrola hesla přes bcrypt
+  if (!user || !bcrypt.compareSync(password, user.password)) {
+    throw new Error("Špatné uživatelské jméno nebo heslo.");
+  }
+
   localStorage.setItem(
     TOKEN_KEY,
     JSON.stringify({ id: user.id, username: user.username }),
   );
+
   return user;
 };
 
