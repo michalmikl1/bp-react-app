@@ -12,12 +12,22 @@ const saveUsers = (users) => {
 
 const register = ({ username, password }) => {
   const users = getUsers();
+
   if (users.find((u) => u.username.toLowerCase() === username.toLowerCase())) {
     throw new Error("Uživatel s tímto jménem již existuje.");
   }
+
   const newUser = { id: Date.now(), username, password };
+
   users.push(newUser);
   saveUsers(users);
+
+  // AUTO LOGIN
+  localStorage.setItem(
+    TOKEN_KEY,
+    JSON.stringify({ id: newUser.id, username: newUser.username }),
+  );
+
   return newUser;
 };
 

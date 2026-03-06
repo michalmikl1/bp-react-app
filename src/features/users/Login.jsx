@@ -14,7 +14,7 @@ export default function Login() {
     e.preventDefault();
     try {
       userService.login({ username, password });
-      navigate("/"); // po přihlášení Home
+      navigate("/");
       location.reload();
     } catch (err) {
       setError(err.message);

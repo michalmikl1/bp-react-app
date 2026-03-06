@@ -12,6 +12,7 @@ export default function Register() {
 
   const handleRegister = (e) => {
     e.preventDefault();
+
     try {
       userService.register({ username, password });
       navigate("/");
