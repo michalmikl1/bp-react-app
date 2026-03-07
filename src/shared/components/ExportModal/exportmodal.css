@@ -1,0 +1,106 @@
+.export-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.55);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 1000;
+}
+
+.export-modal {
+  background: white;
+  border-radius: 10px;
+  padding: 24px;
+  width: 380px;
+  max-width: 90%;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+
+  font-family: system-ui, sans-serif;
+}
+
+.export-modal h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.export-warning {
+  color: red;
+  font-size: 14px;
+  margin-bottom: 12px;
+  animation: fadeInOut 0.3s ease;
+}
+
+/* jemné zmizení textu */
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.export-section {
+  margin-bottom: 20px;
+}
+
+.export-section h3 {
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
+.export-option {
+  display: block;
+  margin-bottom: 6px;
+  cursor: pointer;
+}
+
+.export-option input {
+  margin-right: 8px;
+}
+
+.export-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.export-btn {
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s all;
+}
+
+.export-btn-primary {
+  background: #2563eb;
+  color: white;
+}
+
+.export-btn-primary:hover {
+  background: #1d4ed8;
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.export-btn-secondary {
+  background: #e5e7eb;
+}
+
+.export-btn-secondary:hover {
+  background: #d1d5db;
+}

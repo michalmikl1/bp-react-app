@@ -1,11 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
 import userService from "../../app/services/userService.js";
 import { useState, useEffect } from "react";
+import ExportModal from "../../shared/components/ExportModal/ExportModal.jsx";
 import "./navbar.css";
 
 export default function Navbar() {
   const [user, setUser] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isExportOpen, setIsExportOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,37 +24,49 @@ export default function Navbar() {
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
   return (
-    <nav className="navbar">
-      <div className="navbar-left">
-        <Link to="/" className="navbar-brand">
-          Task Manager
-        </Link>
-      </div>
-
-      <div className={`navbar-right ${menuOpen ? "open" : ""}`}>
-        {user ? (
-          <>
-            <span className="navbar-user">{user.username}</span>
-            <button className="navbar-logout" onClick={handleLogout}>
-              Odhlásit se
-            </button>
-          </>
-        ) : (
-          <Link
-            to="/login"
-            className="navbar-login"
-            onClick={() => setMenuOpen(false)}
-          >
-            Přihlášení
+    <>
+      <nav className="navbar">
+        <div className="navbar-left">
+          <Link to="/" className="navbar-brand">
+            Task Manager
           </Link>
-        )}
-      </div>
+        </div>
 
-      <button className="navbar-hamburger" onClick={toggleMenu}>
-        <span className="hamburger-line"></span>
-        <span className="hamburger-line"></span>
-        <span className="hamburger-line"></span>
-      </button>
-    </nav>
+        <div className={`navbar-right ${menuOpen ? "open" : ""}`}>
+          {user ? (
+            <>
+              <span className="navbar-user">{user.username}</span>
+              <button
+                className="navbar-export-btn"
+                onClick={() => setIsExportOpen(true)}
+              >
+                <i className="fa-solid fa-download"></i>
+              </button>
+              <button className="navbar-logout" onClick={handleLogout}>
+                Odhlásit se
+              </button>
+            </>
+          ) : (
+            <Link
+              to="/login"
+              className="navbar-login"
+              onClick={() => setMenuOpen(false)}
+            >
+              Přihlášení
+            </Link>
+          )}
+        </div>
+
+        <button className="navbar-hamburger" onClick={toggleMenu}>
+          <span className="hamburger-line"></span>
+          <span className="hamburger-line"></span>
+          <span className="hamburger-line"></span>
+        </button>
+      </nav>
+      <ExportModal
+        isOpen={isExportOpen}
+        onClose={() => setIsExportOpen(false)}
+      />
+    </>
   );
 }

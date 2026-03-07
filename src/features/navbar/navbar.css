@@ -33,6 +33,20 @@
   font-weight: 500;
 }
 
+.navbar-export-btn {
+  background-color: rgba(0, 0, 0, 0);
+  color: #fff;
+  font-size: 1.25rem;
+  transition: 0.2s all;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.navbar-export-btn:hover {
+  opacity: 0.7;
+}
+
 .navbar-logout,
 .navbar-login {
   padding: 0.4rem 0.8rem;
