@@ -110,7 +110,7 @@ export default function ProjectDetail() {
 
   return (
     <div className="project-detail-container">
-      <button className="back-btn" onClick={() => navigate("/")}>
+      <button className="back-btn" onClick={() => navigate(-1)}>
         ← Zpět
       </button>
 

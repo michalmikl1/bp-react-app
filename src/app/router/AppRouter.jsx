@@ -5,6 +5,7 @@ import Register from "../../features/users/Register";
 import ProjectDetail from "../../features/projects/ProjectDetail";
 import ProtectedRoute from "./ProtectedRoute";
 import Navbar from "../../features/navbar/Navbar";
+import Upcoming from "../../features/upcoming/Upcoming";
 
 function App() {
   return (
@@ -18,6 +19,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Home />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/upcoming"
+          element={
+            <ProtectedRoute>
+              <Upcoming />
             </ProtectedRoute>
           }
         />

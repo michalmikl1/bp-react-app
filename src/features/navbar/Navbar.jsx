@@ -30,6 +30,9 @@ export default function Navbar() {
           <Link to="/" className="navbar-brand">
             Task Manager
           </Link>
+          <Link to="/upcoming" className="navbar-upcoming-link">
+            Nadcházející
+          </Link>
         </div>
 
         <div className={`navbar-right ${menuOpen ? "open" : ""}`}>

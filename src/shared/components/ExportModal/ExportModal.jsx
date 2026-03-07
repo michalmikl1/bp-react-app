@@ -17,7 +17,7 @@ export default function ExportModal({ isOpen, onClose }) {
 
   const handleExport = () => {
     if (!includeProjects && !includeTasks && !includeUser) {
-      setWarning("Musíte zvolit alespoň jednu možnost pro export!");
+      setWarning("Musíte zvolit alespoň jednu možnost pro export.");
       return;
     }
 
