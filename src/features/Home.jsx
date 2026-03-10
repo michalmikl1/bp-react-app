@@ -12,6 +12,8 @@ export default function Home() {
   const [newProjectDescription, setNewProjectDescription] = useState("");
   const [error, setError] = useState("");
   const [filterText, setFilterText] = useState("");
+  const [deleteModal, setDeleteModal] = useState(null);
+  const [confirmName, setConfirmName] = useState("");
 
   const navigate = useNavigate();
 
@@ -58,9 +60,14 @@ export default function Home() {
     setError("");
   };
 
-  const handleDelete = (id) => {
-    projectService.deleteProject(id);
+  const handleDelete = () => {
+    if (!deleteModal) return;
+
+    projectService.deleteProject(deleteModal.id);
     setProjects(projectService.getProjects());
+
+    setDeleteModal(null);
+    setConfirmName("");
   };
 
   const startEditing = (project) => {
@@ -190,7 +197,7 @@ export default function Home() {
                   className="project-delete-btn"
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleDelete(project.id);
+                    setDeleteModal(project);
                   }}
                 >
                   <i className="fa-solid fa-trash"></i>
@@ -198,6 +205,46 @@ export default function Home() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+      {deleteModal && (
+        <div className="delete-modal-overlay">
+          <div className="delete-modal">
+            <h3>Smazat projekt</h3>
+
+            <p>
+              Opravdu chcete smazat projekt <b>{deleteModal.name}</b>?
+            </p>
+
+            <p>Pro potvrzení napište název projektu:</p>
+
+            <input
+              type="text"
+              value={confirmName}
+              onChange={(e) => setConfirmName(e.target.value)}
+              placeholder="Název projektu"
+            />
+
+            <div className="delete-modal-buttons">
+              <button
+                className="cancel-btn"
+                onClick={() => {
+                  setDeleteModal(null);
+                  setConfirmName("");
+                }}
+              >
+                Zrušit
+              </button>
+
+              <button
+                className="confirm-btn"
+                disabled={confirmName !== deleteModal.name}
+                onClick={handleDelete}
+              >
+                Smazat
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

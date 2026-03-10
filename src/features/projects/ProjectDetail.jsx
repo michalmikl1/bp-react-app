@@ -26,8 +26,9 @@ export default function ProjectDetail() {
 
   const [editingTaskId, setEditingTaskId] = useState(null);
   const [editingTask, setEditingTask] = useState({});
+  const [editingDesc, setEditingDesc] = useState(false);
+  const [descValue, setDescValue] = useState("");
 
-  // filtry a řazení
   const [statusFilter, setStatusFilter] = useState("");
   const [priorityFilter, setPriorityFilter] = useState("");
   const [dueSoonOnly, setDueSoonOnly] = useState(false);
@@ -36,6 +37,7 @@ export default function ProjectDetail() {
     const found = projectService.getProjectById(projectId);
     setProject(found);
     setTasks(taskService.getTasksByProjectId(projectId));
+    setDescValue(found?.description || "");
   }, [projectId]);
 
   if (!project) {
@@ -69,8 +71,17 @@ export default function ProjectDetail() {
   };
 
   const handleDelete = (taskId) => {
-    taskService.deleteTask(taskId);
-    refreshTasks();
+    const task = tasks.find((t) => t.id === taskId);
+    if (!task) return;
+
+    const confirmDelete = window.confirm(
+      `Opravdu chcete smazat úkol "${task.title}"? Tuto akci nelze vrátit.`,
+    );
+
+    if (confirmDelete) {
+      taskService.deleteTask(taskId);
+      refreshTasks();
+    }
   };
 
   const startEditingTask = (task) => {
@@ -86,6 +97,18 @@ export default function ProjectDetail() {
     setEditingTask({});
   };
 
+  const statusCz = {
+    [TaskStatus.TODO]: "Zpracovat",
+    [TaskStatus.IN_PROGRESS]: "Probíhá",
+    [TaskStatus.DONE]: "Hotovo",
+  };
+
+  const priorityCz = {
+    [TaskPriority.LOW]: "Nízká",
+    [TaskPriority.MEDIUM]: "Střední",
+    [TaskPriority.HIGH]: "Vysoká",
+  };
+
   const stats = {
     total: tasks.length,
     todo: tasks.filter((t) => t.status === TaskStatus.TODO).length,
@@ -94,7 +117,6 @@ export default function ProjectDetail() {
     high: tasks.filter((t) => t.priority === TaskPriority.HIGH).length,
   };
 
-  // filtrované a řazené úkoly
   const filteredTasks = tasks.filter((t) => {
     if (statusFilter && t.status !== statusFilter) return false;
     if (priorityFilter && t.priority !== priorityFilter) return false;
@@ -108,6 +130,17 @@ export default function ProjectDetail() {
     return true;
   });
 
+  const saveProjectDesc = () => {
+    projectService.updateProject({ ...project, description: descValue });
+    setProject({ ...project, description: descValue });
+    setEditingDesc(false);
+  };
+
+  const cancelProjectDesc = () => {
+    setDescValue(project.description || "");
+    setEditingDesc(false);
+  };
+
   return (
     <div className="project-detail-container">
       <button className="back-btn" onClick={() => navigate(-1)}>
@@ -116,9 +149,37 @@ export default function ProjectDetail() {
 
       <div className="project-header" style={{ background: project.gradient }}>
         <h1 className="project-header-title">{project.name}</h1>
-        <p className="project-header-desc">
-          {project.description || "Bez popisu"}
-        </p>
+
+        {editingDesc ? (
+          <div className="project-desc-edit-wrap">
+            <textarea
+              className="project-desc-input"
+              value={descValue}
+              onChange={(e) => setDescValue(e.target.value)}
+            />
+            <div className="project-desc-buttons">
+              <button className="task-save-btn" onClick={saveProjectDesc}>
+                Uložit
+              </button>
+              <button
+                className="task-delete-button"
+                onClick={cancelProjectDesc}
+              >
+                Zrušit
+              </button>
+            </div>
+          </div>
+        ) : (
+          <p className="project-header-desc">
+            {project.description || "Bez popisu"}{" "}
+            <i
+              className="fa-solid fa-pen-to-square edit-desc-icon"
+              onClick={() => setEditingDesc(true)}
+              title="Upravit popis"
+            ></i>
+          </p>
+        )}
+
         <span className="project-header-date">
           Datum vytvoření: {new Date(project.createdAt).toLocaleDateString()}
         </span>
@@ -135,7 +196,7 @@ export default function ProjectDetail() {
         </div>
         <div className="stat-box">
           <h3>{stats.inProgress}</h3>
-          <p>In Progress</p>
+          <p>Probíhá</p>
         </div>
         <div className="stat-box">
           <h3>{stats.done}</h3>
@@ -183,7 +244,9 @@ export default function ProjectDetail() {
               }
             >
               {Object.values(TaskStatus).map((s) => (
-                <option key={s}>{s}</option>
+                <option key={s} value={s}>
+                  {statusCz[s]}
+                </option>
               ))}
             </select>
             <select
@@ -193,11 +256,14 @@ export default function ProjectDetail() {
               }
             >
               {Object.values(TaskPriority).map((p) => (
-                <option key={p}>{p}</option>
+                <option key={p} value={p}>
+                  {priorityCz[p]}
+                </option>
               ))}
             </select>
             <input
               type="date"
+              required
               value={newTask.dueDate}
               onChange={(e) =>
                 setNewTask({ ...newTask, dueDate: e.target.value })
@@ -209,7 +275,6 @@ export default function ProjectDetail() {
           </form>
         )}
 
-        {/* Filtry úkolů */}
         <div className="task-filters">
           <select
             value={statusFilter}
@@ -218,7 +283,7 @@ export default function ProjectDetail() {
             <option value="">Všechny stavy</option>
             {Object.values(TaskStatus).map((s) => (
               <option key={s} value={s}>
-                {s}
+                {statusCz[s]}
               </option>
             ))}
           </select>
@@ -229,7 +294,7 @@ export default function ProjectDetail() {
             <option value="">Všechny priority</option>
             {Object.values(TaskPriority).map((p) => (
               <option key={p} value={p}>
-                {p}
+                {priorityCz[p]}
               </option>
             ))}
           </select>
@@ -288,7 +353,9 @@ export default function ProjectDetail() {
                         }
                       >
                         {Object.values(TaskStatus).map((s) => (
-                          <option key={s}>{s}</option>
+                          <option key={s} value={s}>
+                            {statusCz[s]}
+                          </option>
                         ))}
                       </select>
                       <select
@@ -301,7 +368,9 @@ export default function ProjectDetail() {
                         }
                       >
                         {Object.values(TaskPriority).map((p) => (
-                          <option key={p}>{p}</option>
+                          <option key={p} value={p}>
+                            {priorityCz[p]}
+                          </option>
                         ))}
                       </select>
                       <input
@@ -319,9 +388,11 @@ export default function ProjectDetail() {
                     <>
                       <h3 className="task-card-title">{task.title}</h3>
                       <p className="task-card-desc">{task.description}</p>
-                      <p className="task-card-status">Status: {task.status}</p>
+                      <p className="task-card-status">
+                        Status: {statusCz[task.status]}
+                      </p>
                       <p className="task-card-priority">
-                        Priorita: {task.priority}
+                        Priorita: {priorityCz[task.priority]}
                       </p>
                       {task.dueDate && (
                         <p className="task-card-enddate">

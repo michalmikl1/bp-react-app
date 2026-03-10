@@ -1,5 +1,6 @@
 import { getRandomGradient } from "../../shared/constants/project.gradient-colors";
 import storage from "./storage.service";
+import taskService from "./task.service";
 
 const KEY = "projects";
 
@@ -32,6 +33,8 @@ const updateProject = (updated) => {
 const deleteProject = (id) => {
   const projects = getProjects().filter((p) => p.id !== id);
   storage.set(KEY, projects);
+
+  taskService.deleteTasksByProjectId(id);
 };
 
 export default {

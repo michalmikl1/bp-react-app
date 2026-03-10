@@ -35,6 +35,11 @@ const deleteTask = (taskId) => {
   storage.set(KEY, tasks);
 };
 
+const deleteTasksByProjectId = (projectId) => {
+  const tasks = getTasks().filter((t) => t.projectId !== projectId);
+  storage.set(KEY, tasks);
+};
+
 export default {
   getTasks,
   getTasksByProjectId,
@@ -42,4 +47,5 @@ export default {
   createTask,
   updateTask,
   deleteTask,
+  deleteTasksByProjectId,
 };
