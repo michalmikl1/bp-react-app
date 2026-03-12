@@ -1,0 +1,10 @@
+<div class="auth-container">
+  <h2>Registrace</h2>
+  <form class="auth-form" (submit)="handleRegister($event)">
+    <input type="text" placeholder="Uživatelské jméno" [(ngModel)]="username" name="username" required />
+    <input type="password" placeholder="Heslo" [(ngModel)]="password" name="password" required />
+    <button type="submit">Zaregistrovat se</button>
+    @if (error) { <p class="auth-error">{{ error }}</p> }
+  </form>
+  <p class="no-account-text">Již máte účet? <a routerLink="/login">Přihlásit se</a></p>
+</div>
