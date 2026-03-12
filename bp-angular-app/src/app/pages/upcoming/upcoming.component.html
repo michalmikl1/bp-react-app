@@ -1,0 +1,15 @@
+<div class="upcoming-container">
+  <h2>Nadcházející úkoly</h2>
+  @for (date of Object.keys(upcomingTasks); track date) {
+    <div class="day-block" [class.has-tasks]="upcomingTasks[date].length > 0">
+      <h3>{{ formatDate(date) }}</h3>
+      @if (upcomingTasks[date].length > 0) {
+        <ul>
+          @for (task of upcomingTasks[date]; track task.id) {
+            <li><a class="task-link" [routerLink]="task.projectId ? ['/projects', task.projectId] : ['/']"><span class="task-project">[{{ task.projectName }}]</span> <span class="task-title">{{ task.title }}</span></a></li>
+          }
+        </ul>
+      } @else { <p class="no-tasks">Žádné úkoly</p> }
+    </div>
+  }
+</div>

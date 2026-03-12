@@ -1,0 +1,75 @@
+.upcoming-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.upcoming-container h2 {
+  text-align: center;
+  margin-bottom: 24px;
+  font-size: 24px;
+}
+
+.day-block {
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border-left: 4px solid transparent;
+  background-color: #f9f9f9;
+  transition:
+    background-color 0.2s,
+    border-left 0.2s;
+}
+
+.day-block.has-tasks {
+  border-left: 4px solid #2563eb;
+  background-color: #eef4ff;
+}
+
+.day-block h3 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+}
+
+.day-block ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.day-block li {
+  margin-bottom: 6px;
+  padding: 4px 0;
+}
+
+.task-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  color: inherit;
+  width: 100%;
+  transition:
+    background-color 0.2s,
+    border-radius 0.2s;
+}
+
+.task-link:hover {
+  background-color: #e0e7ff;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.task-project {
+  font-weight: bold;
+  color: #2563eb;
+}
+
+.task-title {
+  flex: 1;
+}
+
+.no-tasks {
+  color: #888;
+  font-style: italic;
+}

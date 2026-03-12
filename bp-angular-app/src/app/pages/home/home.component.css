@@ -1,0 +1,351 @@
+.home-container {
+  max-width: 1100px;
+  margin: 100px auto;
+  padding: 0 20px;
+}
+
+.home-title {
+  font-size: 50px;
+  margin-bottom: 1rem;
+  color: #333;
+  text-align: center;
+}
+
+.home-projects-title {
+  margin: 60px 0 0 0;
+  font-size: 40px;
+  color: #4f46e5;
+}
+
+#home-projects-dashboard-title {
+  margin-bottom: 1rem;
+}
+
+.home-empty {
+  font-style: italic;
+  margin-top: 1rem;
+}
+
+/* Formulář vytvoření projektu */
+.project-create-wrap {
+  max-width: 500px;
+  margin: 30px 0 60px 0;
+}
+
+.project-create-wrap h3 {
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+  color: #333;
+}
+
+.project-create-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.project-create-form input,
+.project-create-form textarea {
+  width: 100%;
+  padding: 0.6rem 0.9rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.project-create-form textarea {
+  min-height: 90px;
+  resize: none;
+}
+
+.project-create-form input:focus,
+.project-create-form textarea:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 5px rgba(79, 70, 229, 0.4);
+}
+
+.project-create-form button {
+  padding: 0.6rem 1rem;
+  background-color: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
+}
+
+.project-create-form button:hover {
+  background-color: #3730a3;
+  transform: translateY(-1px);
+}
+
+.project-create-error {
+  margin-top: 10px;
+  color: red;
+  font-size: 0.9rem;
+}
+
+/* Projekt Filter */
+.project-filter > h3 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.project-filter > input {
+  width: 275px;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+/* Grid projektů */
+.home-project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.2rem;
+  margin-top: 2.5rem;
+}
+
+/* Projekt karta */
+.project-card {
+  border-radius: 14px;
+  color: white;
+  display: flex;
+  padding: 2rem 1rem !important;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 260px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.project-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.2);
+}
+
+.project-name {
+  font-size: 1.4rem;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.project-description {
+  font-size: 1.1rem;
+  text-align: center;
+  opacity: 0.95;
+  min-height: 40px;
+  white-space: pre-line; /* zachová zalomení řádků */
+}
+
+.project-name-input {
+  font-size: 1.4rem;
+  font-weight: bold;
+  border: none;
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+  outline: none;
+  text-align: center;
+  width: 100%;
+  border-radius: 6px;
+  padding: 4px 6px;
+}
+
+.project-date {
+  text-align: center;
+  opacity: 0.85;
+}
+
+/* Tlačítka na kartě */
+.project-btns {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.project-edit-btn,
+.project-delete-btn {
+  font-size: 1.2rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    opacity 0.2s ease;
+}
+
+.project-edit-btn > i {
+  color: #333;
+}
+
+.project-delete-btn > i {
+  color: red;
+}
+
+.project-edit-btn:hover,
+.project-delete-btn:hover {
+  transform: scale(1.15);
+  opacity: 0.9;
+}
+
+/* Overlay */
+.delete-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal box */
+.delete-modal {
+  background: white;
+  padding: 28px 30px;
+  margin-top: -60px;
+  border-radius: 12px;
+  width: 420px;
+  max-width: 90%;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+}
+
+.delete-modal h3 {
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 1.4rem;
+}
+
+.delete-modal p {
+  color: #555;
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+}
+
+/* Input */
+.delete-modal input {
+  width: 100%;
+  padding: 0.6rem 0.9rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+  margin-top: 10px;
+  transition: all 0.2s ease;
+}
+
+.delete-modal input:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 5px rgba(79, 70, 229, 0.4);
+}
+
+/* Buttons */
+.delete-modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.cancel-btn,
+.confirm-btn {
+  padding: 0.55rem 0.9rem;
+  border-radius: 6px;
+  border: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease,
+    opacity 0.2s ease;
+}
+
+/* Cancel */
+.cancel-btn {
+  background: #e5e7eb;
+  color: #333;
+}
+
+.cancel-btn:hover {
+  background: #d1d5db;
+  transform: translateY(-1px);
+}
+
+/* Confirm delete */
+.confirm-btn {
+  background: #ef4444;
+  color: white;
+}
+
+.confirm-btn:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+}
+
+.confirm-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Responsivita */
+@media (max-width: 1024px) {
+  .home-title {
+    font-size: 42px;
+  }
+
+  .home-projects-title {
+    font-size: 32px;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-container {
+    margin: 60px auto;
+  }
+
+  .home-title {
+    font-size: 34px;
+  }
+
+  .home-projects-title {
+    font-size: 26px;
+  }
+
+  .project-create-wrap {
+    max-width: 100%;
+  }
+
+  .project-card {
+    min-height: 220px;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-title {
+    font-size: 28px;
+  }
+
+  .home-projects-title {
+    font-size: 22px;
+  }
+
+  .project-card {
+    padding: 1rem;
+  }
+}

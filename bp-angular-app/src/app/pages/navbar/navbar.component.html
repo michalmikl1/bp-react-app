@@ -1,0 +1,19 @@
+<nav class="navbar">
+  <div class="navbar-left">
+    <a routerLink="/" class="navbar-brand">Task Manager</a>
+    <a routerLink="/upcoming" class="navbar-upcoming-link">Nadcházející</a>
+  </div>
+  <div class="navbar-right" [class.open]="menuOpen">
+    @if (user) {
+      <span class="navbar-user">{{ user.username }}</span>
+      <button class="navbar-export-btn" (click)="isExportOpen = true"><i class="fa-solid fa-download"></i></button>
+      <button class="navbar-logout" (click)="handleLogout()">Odhlásit se</button>
+    } @else {
+      <a routerLink="/login" class="navbar-login" (click)="menuOpen = false">Přihlášení</a>
+    }
+  </div>
+  <button class="navbar-hamburger" (click)="menuOpen = !menuOpen">
+    <span class="hamburger-line"></span><span class="hamburger-line"></span><span class="hamburger-line"></span>
+  </button>
+</nav>
+<app-export-modal [isOpen]="isExportOpen" (closed)="isExportOpen = false"></app-export-modal>
