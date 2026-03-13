@@ -4,16 +4,15 @@ import { exportMarkdown } from "./markdownExporter";
 import { downloadFile } from "./downloadFile";
 
 import userService from "../../../app/services/userService";
+import projectService from "../../../app/services/project.service";
+import taskService from "../../../app/services/task.service";
 
 function loadLocalStorageData() {
-  const projects = JSON.parse(localStorage.getItem("projects") || "[]");
-  const tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
-
   const currentUser = userService.getCurrentUser();
 
   return {
-    projects,
-    tasks,
+    projects: projectService.getProjects(),
+    tasks: taskService.getTasks(),
     user: currentUser,
   };
 }

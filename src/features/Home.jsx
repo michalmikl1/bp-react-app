@@ -51,7 +51,6 @@ export default function Home() {
     projectService.createProject({
       name: trimmedName,
       description: trimmedDescription,
-      ownerId: 1,
     });
 
     setProjects(projectService.getProjects());
