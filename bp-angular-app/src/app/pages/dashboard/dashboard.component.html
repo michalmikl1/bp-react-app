@@ -1,0 +1,9 @@
+<div class="db-container">
+  <div class="db-stats-grid">
+    <div class="db-stat-box"><h3>Projekty celkem</h3><p>{{ projects.length }}</p></div>
+    <div class="db-stat-box"><h3>Úkoly celkem</h3><p>{{ tasks.length }}</p></div>
+    <div class="db-stat-box"><h3>Úkoly podle stavu</h3><p>TODO: {{ countByStatus('TODO') }}</p><p>In Progress: {{ countByStatus('IN_PROGRESS') }}</p><p>Done: {{ countByStatus('DONE') }}</p></div>
+    <div class="db-stat-box"><h3>Úkoly podle priority</h3><p>Low: {{ countByPriority('LOW') }}</p><p>Medium: {{ countByPriority('MEDIUM') }}</p><p>High: {{ countByPriority('HIGH') }}</p></div>
+    <div class="db-stat-box"><h3>Úkoly s termínem do 1 dne</h3><p>{{ dueSoonCount }}</p></div>
+  </div>
+</div>

@@ -1,0 +1,60 @@
+@if (!project) {
+  <div class="project-detail-container"><h2>Projekt nebyl nalezen</h2><button class="back-btn" (click)="router.navigate(['/'])">Zpět na projekty</button></div>
+} @else {
+  <div class="project-detail-container">
+    <button class="back-btn" (click)="router.navigate(['/'])">← Zpět</button>
+    <div class="project-header" [style.background]="project.gradient">
+      <h1 class="project-header-title">{{ project.name }}</h1>
+      @if (editingDesc) {
+        <div class="project-desc-edit-wrap">
+          <textarea class="project-desc-input" [(ngModel)]="descValue"></textarea>
+          <div class="project-desc-buttons"><button class="task-save-btn" (click)="saveProjectDesc()">Uložit</button><button class="task-delete-button" (click)="editingDesc = false">Zrušit</button></div>
+        </div>
+      } @else {
+        <p class="project-header-desc">{{ project.description || 'Bez popisu' }} <i class="fa-solid fa-pen-to-square edit-desc-icon" (click)="editingDesc = true"></i></p>
+      }
+      <span class="project-header-date">Datum vytvoření: {{ project.createdAt | date }}</span>
+    </div>
+
+    <div class="tasks-section">
+      <div class="tasks-header"><h2 class="tasks-title">Úkoly</h2><button class="task-button" (click)="formVisible = !formVisible">{{ formVisible ? 'Zavřít' : 'Přidat úkol' }}</button></div>
+      @if (formVisible) {
+        <form class="task-form" (submit)="createTask($event)">
+          <input type="text" placeholder="Název úkolu" [(ngModel)]="newTask.title" name="title" required />
+          <textarea placeholder="Popis" [(ngModel)]="newTask.description" name="description"></textarea>
+          <select [(ngModel)]="newTask.status" name="status">@for (s of statusValues; track s) {<option [value]="s">{{ statusCz[s] }}</option>}</select>
+          <select [(ngModel)]="newTask.priority" name="priority">@for (p of priorityValues; track p) {<option [value]="p">{{ priorityCz[p] }}</option>}</select>
+          <input type="date" [(ngModel)]="newTask.dueDate" name="dueDate" required />
+          <button class="task-save-btn" type="submit">Uložit</button>
+        </form>
+      }
+
+      <div class="task-filters">
+        <select [(ngModel)]="statusFilter" name="statusFilter"><option value="">Všechny stavy</option>@for (s of statusValues; track s) {<option [value]="s">{{ statusCz[s] }}</option>}</select>
+        <select [(ngModel)]="priorityFilter" name="priorityFilter"><option value="">Všechny priority</option>@for (p of priorityValues; track p) {<option [value]="p">{{ priorityCz[p] }}</option>}</select>
+        <label class="due-soon-label"><input type="checkbox" [(ngModel)]="dueSoonOnly" name="dueSoonOnly" />Úkoly do 1 dne</label>
+      </div>
+
+      <div class="task-grid">
+        @for (task of filteredTasks; track task.id) {
+          <div class="task-card"><div class="task-inner-card">
+            @if (editingTaskId === task.id) {
+              <input class="task-card-title-input" [(ngModel)]="editingTask.title" name="etitle{{task.id}}" />
+              <textarea class="task-card-desc-input" [(ngModel)]="editingTask.description" name="edesc{{task.id}}"></textarea>
+              <select [(ngModel)]="editingTask.status" name="estatus{{task.id}}">@for (s of statusValues; track s) {<option [value]="s">{{ statusCz[s] }}</option>}</select>
+              <select [(ngModel)]="editingTask.priority" name="epriority{{task.id}}">@for (p of priorityValues; track p) {<option [value]="p">{{ priorityCz[p] }}</option>}</select>
+              <input type="date" [(ngModel)]="editingTask.dueDate" name="edue{{task.id}}" />
+            } @else {
+              <h3 class="task-card-title">{{ task.title }}</h3><p class="task-card-desc">{{ task.description }}</p><p class="task-card-status">Status: {{ statusCz[task.status] }}</p><p class="task-card-priority">Priorita: {{ priorityCz[task.priority] }}</p>
+              @if (task.dueDate) {<p class="task-card-enddate">Termín dokončení: {{ task.dueDate }}</p>}
+            }
+          </div>
+          <div class="task-card-buttons">
+            @if (editingTaskId === task.id) { <button class="task-save-btn" (click)="saveTaskEdit()">Uložit změny</button> }
+            @else { <button class="task-button task-edit-btn" (click)="startEdit(task)">Upravit</button><button class="task-delete-button" (click)="deleteTask(task.id)">Smazat</button> }
+          </div></div>
+        }
+      </div>
+    </div>
+  </div>
+}
