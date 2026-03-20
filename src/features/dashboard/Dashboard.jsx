@@ -1,4 +1,5 @@
 import taskService from "../../app/services/task.service";
+import { TaskStatus } from "../../shared/constants/task.constants";
 import "./dashboard.css";
 
 export default function Dashboard({ projects }) {
@@ -6,11 +7,14 @@ export default function Dashboard({ projects }) {
 
   const totalProjects = projects.length;
   const totalTasks = tasks.length;
+  const completedTasks = tasks.filter((t) => t.completed).length;
+  const activeTasks = totalTasks - completedTasks;
 
   const tasksByStatus = {
-    TODO: tasks.filter((t) => t.status === "TODO").length,
-    IN_PROGRESS: tasks.filter((t) => t.status === "IN_PROGRESS").length,
-    DONE: tasks.filter((t) => t.status === "DONE").length,
+    TODO: tasks.filter((t) => t.status === TaskStatus.TODO).length,
+    IN_PROGRESS: tasks.filter((t) => t.status === TaskStatus.IN_PROGRESS)
+      .length,
+    REVIEW: tasks.filter((t) => t.status === TaskStatus.REVIEW).length,
   };
 
   const tasksByPriority = {
@@ -42,7 +46,12 @@ export default function Dashboard({ projects }) {
           <h3>Úkoly podle stavu</h3>
           <p>Zpracovat: {tasksByStatus.TODO}</p>
           <p>Probíhá: {tasksByStatus.IN_PROGRESS}</p>
-          <p>Hotovo: {tasksByStatus.DONE}</p>
+          <p>Ke kontrole: {tasksByStatus.REVIEW}</p>
+        </div>
+        <div className="db-stat-box">
+          <h3>Stav úkolů</h3>
+          <p>Aktivní: {activeTasks}</p>
+          <p>Splněné: {completedTasks}</p>
         </div>
         <div className="db-stat-box">
           <h3>Úkoly podle priority</h3>

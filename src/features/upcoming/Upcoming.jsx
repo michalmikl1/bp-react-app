@@ -14,7 +14,7 @@ export default function Upcoming() {
     return `${year}-${month}-${day}`;
   };
 
-  useEffect(() => {
+  const refreshTasks = () => {
     const projects = projectService.getProjects();
     const tasks = taskService.getTasks();
 
@@ -51,6 +51,13 @@ export default function Upcoming() {
     }
 
     setUpcomingTasks(upcoming);
+  };
+
+  useEffect(() => {
+    refreshTasks();
+    // Aktualizuj zadávky každých 30 sekund, aby se dynamicky aktualizovaly
+    const interval = setInterval(refreshTasks, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   const formatDate = (dateString) => {
@@ -77,10 +84,10 @@ export default function Upcoming() {
           {upcomingTasks[date].length > 0 ? (
             <ul>
               {upcomingTasks[date].map((task) => (
-                <li key={task.id}>
+                <li key={task.id} className={task.completed ? "completed" : ""}>
                   <Link
                     to={task.projectId ? `/projects/${task.projectId}` : "#"}
-                    className="task-link"
+                    className={`task-link ${task.completed ? "task-completed" : ""}`}
                     title={`[${task.projectName}] ${task.title}`}
                   >
                     <span className="task-project">[{task.projectName}]</span>{" "}

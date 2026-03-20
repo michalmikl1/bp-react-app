@@ -7,7 +7,14 @@ import {
 
 const KEY = "tasks";
 
-const getTasks = () => storage.getForCurrentUser(KEY) || [];
+const getTasks = () => {
+  const tasks = storage.getForCurrentUser(KEY) || [];
+  // Migrace starých úkolů bez completed flagu
+  return tasks.map((t) => ({
+    ...t,
+    completed: t.completed || false,
+  }));
+};
 
 const getTasksByProjectId = (projectId) =>
   getTasks().filter((t) => t.projectId === projectId);
@@ -46,6 +53,7 @@ const createTask = (task) => {
     id: Date.now(),
     createdAt: new Date().toISOString(),
     ownerId: currentUser?.id ?? null,
+    completed: false,
   };
 
   tasks.push(newTask);

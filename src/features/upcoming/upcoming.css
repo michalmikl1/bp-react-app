@@ -41,6 +41,16 @@
 .day-block li {
   margin-bottom: 6px;
   padding: 4px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.task-item-checkbox {
+  width: 1.1rem;
+  height: 1.1rem;
+  cursor: pointer;
+  flex-shrink: 0;
 }
 
 .task-link {
@@ -49,16 +59,26 @@
   gap: 6px;
   text-decoration: none;
   color: inherit;
-  width: 100%;
+  flex: 1;
   transition:
     background-color 0.2s,
     border-radius 0.2s;
+}
+
+.task-link.task-completed {
+  text-decoration: line-through;
+  color: #999;
+  opacity: 0.7;
 }
 
 .task-link:hover {
   background-color: #e0e7ff;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.task-link.task-completed:hover {
+  background-color: #f0f0f0;
 }
 
 .task-project {

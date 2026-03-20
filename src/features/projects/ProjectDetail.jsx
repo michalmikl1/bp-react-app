@@ -27,6 +27,7 @@ export default function ProjectDetail() {
     status: TaskStatus.TODO,
     priority: TaskPriority.MEDIUM,
     dueDate: "",
+    completed: false,
   });
 
   const [editingTaskId, setEditingTaskId] = useState(null);
@@ -93,6 +94,7 @@ export default function ProjectDetail() {
         status: TaskStatus.TODO,
         priority: TaskPriority.MEDIUM,
         dueDate: "",
+        completed: false,
       });
       setError("");
     } catch (err) {
@@ -158,7 +160,7 @@ export default function ProjectDetail() {
   const statusCz = {
     [TaskStatus.TODO]: "Zpracovat",
     [TaskStatus.IN_PROGRESS]: "Probíhá",
-    [TaskStatus.DONE]: "Hotovo",
+    [TaskStatus.REVIEW]: "Ke kontrole",
   };
 
   const priorityCz = {
@@ -171,7 +173,8 @@ export default function ProjectDetail() {
     total: tasks.length,
     todo: tasks.filter((t) => t.status === TaskStatus.TODO).length,
     inProgress: tasks.filter((t) => t.status === TaskStatus.IN_PROGRESS).length,
-    done: tasks.filter((t) => t.status === TaskStatus.DONE).length,
+    review: tasks.filter((t) => t.status === TaskStatus.REVIEW).length,
+    completed: tasks.filter((t) => t.completed).length,
     high: tasks.filter((t) => t.priority === TaskPriority.HIGH).length,
   };
 
@@ -267,15 +270,19 @@ export default function ProjectDetail() {
         </div>
         <div className="stat-box">
           <h3>{stats.todo}</h3>
-          <p>TODO</p>
+          <p>Zpracovat</p>
         </div>
         <div className="stat-box">
           <h3>{stats.inProgress}</h3>
           <p>Probíhá</p>
         </div>
         <div className="stat-box">
-          <h3>{stats.done}</h3>
-          <p>Hotovo</p>
+          <h3>{stats.review}</h3>
+          <p>Ke kontrole</p>
+        </div>
+        <div className="stat-box">
+          <h3>{stats.completed}</h3>
+          <p>Splneno</p>
         </div>
         <div className="stat-box">
           <h3>{stats.high}</h3>
@@ -400,6 +407,19 @@ export default function ProjectDetail() {
                 <div className="task-inner-card">
                   {editingTaskId === task.id ? (
                     <>
+                      <label className="task-completed-checkbox">
+                        <input
+                          type="checkbox"
+                          checked={editingTask.completed || false}
+                          onChange={(e) =>
+                            setEditingTask({
+                              ...editingTask,
+                              completed: e.target.checked,
+                            })
+                          }
+                        />
+                        Splneno
+                      </label>
                       <input
                         className="task-card-title-input"
                         value={editingTask.title}
@@ -465,7 +485,27 @@ export default function ProjectDetail() {
                     </>
                   ) : (
                     <>
-                      <h3 className="task-card-title">{task.title}</h3>
+                      <div className="task-header-row">
+                        <input
+                          type="checkbox"
+                          className="task-checkbox"
+                          checked={task.completed || false}
+                          onChange={(e) => {
+                            taskService.updateTask({
+                              ...task,
+                              completed: e.target.checked,
+                            });
+                            refreshTasks();
+                          }}
+                        />
+                        <h3
+                          className={`task-card-title ${
+                            task.completed ? "task-completed" : ""
+                          }`}
+                        >
+                          {task.title}
+                        </h3>
+                      </div>
                       <p className="task-card-desc">{task.description}</p>
                       <p className="task-card-status">
                         Status: {statusCz[task.status]}

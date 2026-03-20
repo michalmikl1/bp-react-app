@@ -39,7 +39,8 @@ export function exportMarkdown(data) {
 
       if (relatedTasks.length) {
         relatedTasks.forEach((task) => {
-          md += `- [ ] ${task.title}\n`;
+          const checked = task.completed ? "x" : " ";
+          md += `- [${checked}] ${task.title}\n`;
         });
       } else {
         md += `_No tasks_\n`;
