@@ -255,4 +255,18 @@
   .project-header {
     padding: 1.2rem;
   }
+
+  .task-filters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .task-filters select {
+    width: 100%;
+  }
+
+  .due-soon-label {
+    justify-content: center;
+  }
 }
