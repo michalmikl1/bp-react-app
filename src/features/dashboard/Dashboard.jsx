@@ -40,15 +40,15 @@ export default function Dashboard({ projects }) {
         </div>
         <div className="db-stat-box">
           <h3>Úkoly podle stavu</h3>
-          <p>TODO: {tasksByStatus.TODO}</p>
-          <p>In Progress: {tasksByStatus.IN_PROGRESS}</p>
-          <p>Done: {tasksByStatus.DONE}</p>
+          <p>Zpracovat: {tasksByStatus.TODO}</p>
+          <p>Probíhá: {tasksByStatus.IN_PROGRESS}</p>
+          <p>Hotovo: {tasksByStatus.DONE}</p>
         </div>
         <div className="db-stat-box">
           <h3>Úkoly podle priority</h3>
-          <p>Low: {tasksByPriority.LOW}</p>
-          <p>Medium: {tasksByPriority.MEDIUM}</p>
-          <p>High: {tasksByPriority.HIGH}</p>
+          <p>Nízká: {tasksByPriority.LOW}</p>
+          <p>Střední: {tasksByPriority.MEDIUM}</p>
+          <p>Vysoká: {tasksByPriority.HIGH}</p>
         </div>
         <div className="db-stat-box">
           <h3>Úkoly s termínem do 1 dne</h3>

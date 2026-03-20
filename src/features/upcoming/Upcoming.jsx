@@ -81,6 +81,7 @@ export default function Upcoming() {
                   <Link
                     to={task.projectId ? `/projects/${task.projectId}` : "#"}
                     className="task-link"
+                    title={`[${task.projectName}] ${task.title}`}
                   >
                     <span className="task-project">[{task.projectName}]</span>{" "}
                     <span className="task-title">{task.title}</span>

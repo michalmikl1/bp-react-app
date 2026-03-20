@@ -19,6 +19,7 @@
   transition:
     background-color 0.2s,
     border-left 0.2s;
+  overflow: hidden;
 }
 
 .day-block.has-tasks {
@@ -67,6 +68,9 @@
 
 .task-title {
   flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .no-tasks {

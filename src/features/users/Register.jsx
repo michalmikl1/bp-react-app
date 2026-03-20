@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import userService from "../../app/services/userService.js";
+import { MAX_USERNAME_LENGTH } from "../../shared/constants/input.limits";
 import "./auth.css";
 
 export default function Register() {
@@ -30,6 +31,7 @@ export default function Register() {
           type="text"
           placeholder="Uživatelské jméno"
           value={username}
+          maxLength={MAX_USERNAME_LENGTH}
           onChange={(e) => setUsername(e.target.value)}
           required
         />

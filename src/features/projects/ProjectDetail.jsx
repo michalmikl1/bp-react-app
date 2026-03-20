@@ -6,6 +6,11 @@ import {
   TaskStatus,
   TaskPriority,
 } from "../../shared/constants/task.constants";
+import {
+  MAX_TASK_TITLE_LENGTH,
+  MAX_TASK_DESCRIPTION_LENGTH,
+  MAX_PROJECT_DESCRIPTION_LENGTH,
+} from "../../shared/constants/input.limits";
 import "./projectDetail.css";
 
 export default function ProjectDetail() {
@@ -28,6 +33,7 @@ export default function ProjectDetail() {
   const [editingTask, setEditingTask] = useState({});
   const [editingDesc, setEditingDesc] = useState(false);
   const [descValue, setDescValue] = useState("");
+  const [error, setError] = useState("");
 
   const [statusFilter, setStatusFilter] = useState("");
   const [priorityFilter, setPriorityFilter] = useState("");
@@ -57,17 +63,41 @@ export default function ProjectDetail() {
 
   const handleCreateTask = (e) => {
     e.preventDefault();
-    if (!newTask.title.trim()) return;
-    taskService.createTask({ ...newTask, projectId });
-    refreshTasks();
-    setFormVisible(false);
-    setNewTask({
-      title: "",
-      description: "",
-      status: TaskStatus.TODO,
-      priority: TaskPriority.MEDIUM,
-      dueDate: "",
-    });
+    const title = newTask.title.trim();
+    const description = newTask.description.trim();
+
+    if (!title) {
+      setError("Název úkolu nesmí být prázdný.");
+      return;
+    }
+    if (title.length > MAX_TASK_TITLE_LENGTH) {
+      setError(
+        `Název úkolu může mít maximálně ${MAX_TASK_TITLE_LENGTH} znaků.`,
+      );
+      return;
+    }
+    if (description.length > MAX_TASK_DESCRIPTION_LENGTH) {
+      setError(
+        `Popis úkolu může mít maximálně ${MAX_TASK_DESCRIPTION_LENGTH} znaků.`,
+      );
+      return;
+    }
+
+    try {
+      taskService.createTask({ ...newTask, projectId });
+      refreshTasks();
+      setFormVisible(false);
+      setNewTask({
+        title: "",
+        description: "",
+        status: TaskStatus.TODO,
+        priority: TaskPriority.MEDIUM,
+        dueDate: "",
+      });
+      setError("");
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   const handleDelete = (taskId) => {
@@ -90,11 +120,39 @@ export default function ProjectDetail() {
   };
 
   const saveTaskEdit = () => {
-    if (!editingTask.title.trim()) return;
-    taskService.updateTask(editingTask);
-    refreshTasks();
-    setEditingTaskId(null);
-    setEditingTask({});
+    const title = editingTask.title.trim();
+    const description = (editingTask.description || "").trim();
+
+    if (!title) {
+      setError("Název úkolu nesmí být prázdný.");
+      return;
+    }
+    if (title.length > MAX_TASK_TITLE_LENGTH) {
+      setError(
+        `Název úkolu může mít maximálně ${MAX_TASK_TITLE_LENGTH} znaků.`,
+      );
+      return;
+    }
+    if (description.length > MAX_TASK_DESCRIPTION_LENGTH) {
+      setError(
+        `Popis úkolu může mít maximálně ${MAX_TASK_DESCRIPTION_LENGTH} znaků.`,
+      );
+      return;
+    }
+
+    try {
+      taskService.updateTask({
+        ...editingTask,
+        title,
+        description,
+      });
+      refreshTasks();
+      setEditingTaskId(null);
+      setEditingTask({});
+      setError("");
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   const statusCz = {
@@ -131,9 +189,23 @@ export default function ProjectDetail() {
   });
 
   const saveProjectDesc = () => {
-    projectService.updateProject({ ...project, description: descValue });
-    setProject({ ...project, description: descValue });
-    setEditingDesc(false);
+    const description = descValue.trim();
+
+    if (description.length > MAX_PROJECT_DESCRIPTION_LENGTH) {
+      setError(
+        `Popis projektu může mít maximálně ${MAX_PROJECT_DESCRIPTION_LENGTH} znaků.`,
+      );
+      return;
+    }
+
+    try {
+      projectService.updateProject({ ...project, description });
+      setProject({ ...project, description });
+      setEditingDesc(false);
+      setError("");
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   const cancelProjectDesc = () => {
@@ -155,6 +227,7 @@ export default function ProjectDetail() {
             <textarea
               className="project-desc-input"
               value={descValue}
+              maxLength={MAX_PROJECT_DESCRIPTION_LENGTH}
               onChange={(e) => setDescValue(e.target.value)}
             />
             <div className="project-desc-buttons">
@@ -184,6 +257,8 @@ export default function ProjectDetail() {
           Datum vytvoření: {new Date(project.createdAt).toLocaleDateString()}
         </span>
       </div>
+
+      {error && <p className="project-create-error">{error}</p>}
 
       <div className="stats-grid">
         <div className="stat-box">
@@ -225,6 +300,7 @@ export default function ProjectDetail() {
               type="text"
               placeholder="Název úkolu"
               value={newTask.title}
+              maxLength={MAX_TASK_TITLE_LENGTH}
               onChange={(e) =>
                 setNewTask({ ...newTask, title: e.target.value })
               }
@@ -233,6 +309,7 @@ export default function ProjectDetail() {
             <textarea
               placeholder="Popis"
               value={newTask.description}
+              maxLength={MAX_TASK_DESCRIPTION_LENGTH}
               onChange={(e) =>
                 setNewTask({ ...newTask, description: e.target.value })
               }
@@ -326,6 +403,7 @@ export default function ProjectDetail() {
                       <input
                         className="task-card-title-input"
                         value={editingTask.title}
+                        maxLength={MAX_TASK_TITLE_LENGTH}
                         onChange={(e) =>
                           setEditingTask({
                             ...editingTask,
@@ -336,6 +414,7 @@ export default function ProjectDetail() {
                       <textarea
                         className="task-card-desc-input"
                         value={editingTask.description}
+                        maxLength={MAX_TASK_DESCRIPTION_LENGTH}
                         onChange={(e) =>
                           setEditingTask({
                             ...editingTask,

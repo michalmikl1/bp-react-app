@@ -3,6 +3,10 @@ import Dashboard from "./dashboard/Dashboard";
 import projectService from "../app/services/project.service";
 import "./home.css";
 import { useNavigate } from "react-router-dom";
+import {
+  MAX_PROJECT_NAME_LENGTH,
+  MAX_PROJECT_DESCRIPTION_LENGTH,
+} from "../shared/constants/input.limits";
 
 export default function Home() {
   const [projects, setProjects] = useState([]);
@@ -43,20 +47,39 @@ export default function Home() {
       return;
     }
 
+    if (trimmedName.length > MAX_PROJECT_NAME_LENGTH) {
+      setError(
+        `Název projektu může mít maximálně ${MAX_PROJECT_NAME_LENGTH} znaků.`,
+      );
+      return;
+    }
+
+    if (trimmedDescription.length > MAX_PROJECT_DESCRIPTION_LENGTH) {
+      setError(
+        `Popis projektu může mít maximálně ${MAX_PROJECT_DESCRIPTION_LENGTH} znaků.`,
+      );
+      return;
+    }
+
     if (projectNameExists(trimmedName)) {
       setError("Projekt s tímto názvem již existuje.");
       return;
     }
 
-    projectService.createProject({
-      name: trimmedName,
-      description: trimmedDescription,
-    });
+    try {
+      projectService.createProject({
+        name: trimmedName,
+        description: trimmedDescription,
+      });
 
-    setProjects(projectService.getProjects());
-    setNewProjectName("");
-    setNewProjectDescription("");
-    setError("");
+      setProjects(projectService.getProjects());
+      setNewProjectName("");
+      setNewProjectDescription("");
+      setError("");
+    } catch (err) {
+      setError(err.message);
+      return;
+    }
   };
 
   const handleDelete = () => {
@@ -78,15 +101,32 @@ export default function Home() {
     const project = projectService.getProjectById(id);
     const trimmedName = editName.trim();
 
-    if (!trimmedName || projectNameExists(trimmedName, id)) {
-      setEditingId(null);
+    if (!trimmedName) {
+      setError("Název projektu nesmí být prázdný.");
       return;
     }
 
-    projectService.updateProject({
-      ...project,
-      name: trimmedName,
-    });
+    if (trimmedName.length > MAX_PROJECT_NAME_LENGTH) {
+      setError(
+        `Název projektu může mít maximálně ${MAX_PROJECT_NAME_LENGTH} znaků.`,
+      );
+      return;
+    }
+
+    if (projectNameExists(trimmedName, id)) {
+      setError("Projekt s tímto názvem již existuje.");
+      return;
+    }
+
+    try {
+      projectService.updateProject({
+        ...project,
+        name: trimmedName,
+      });
+    } catch (err) {
+      setError(err.message);
+      return;
+    }
 
     setProjects(projectService.getProjects());
     setEditingId(null);
@@ -119,6 +159,7 @@ export default function Home() {
             type="text"
             placeholder="Název projektu"
             value={newProjectName}
+            maxLength={MAX_PROJECT_NAME_LENGTH}
             onChange={(e) => {
               setNewProjectName(e.target.value);
               if (error) setError("");
@@ -127,6 +168,7 @@ export default function Home() {
           <textarea
             placeholder="Popis projektu (nepovinné)"
             value={newProjectDescription}
+            maxLength={MAX_PROJECT_DESCRIPTION_LENGTH}
             onChange={(e) => setNewProjectDescription(e.target.value)}
           />
           <button type="submit">Vytvořit</button>
@@ -163,6 +205,7 @@ export default function Home() {
                 <input
                   className="project-name-input"
                   value={editName}
+                  maxLength={MAX_PROJECT_NAME_LENGTH}
                   onChange={(e) => setEditName(e.target.value)}
                   onBlur={() => saveEdit(project.id)}
                   onKeyDown={(e) => e.key === "Enter" && saveEdit(project.id)}
